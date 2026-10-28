@@ -1,0 +1,169 @@
+/* Papel de carta: hoja blanca con margen rojo, renglones celestes donde se escribe,
+   y garabatos surrealistas muy tenues en el fondo. */
+:root {
+  --paper: #ffffff;
+  --ink: #161616;
+  --muted: #5e6166;
+  --rule: #d6e1ef;
+  --margin: #e9a5a1;
+  --fold: #eceef1;
+  --shadow: 0 1px 2px rgba(22,22,22,.06), 0 8px 28px rgba(22,22,22,.08);
+
+  --hand: "Kalam", "Comic Neue", "Segoe Print", cursive;
+  --script: "Caveat", "Kalam", cursive;
+  --serif: "Literata", Georgia, "Times New Roman", serif;
+
+  --line: 34px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' fill='none' stroke='%23161616' stroke-opacity='.07' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='40' cy='42' r='12'/%3E%3Ccircle cx='41' cy='43' r='4'/%3E%3Cpath d='M22 42q18-22 36 0q-18 22-36 0'/%3E%3Cpath d='M150 30h40M158 30V12h24v18'/%3E%3Cpath d='M200 120q14-16 34-10q10 4 12 10q-2 6-12 10q-20 6-34-10zM246 120l10-10v20z'/%3E%3Cpath d='M60 170v26m0 0l-10 14m10-14v16m0-16l10 14'/%3E%3Cpath d='M130 200c0-10 16-10 16 0s-24 12-24-2s32-16 32 4'/%3E%3Cpath d='M110 100l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z'/%3E%3Cpath d='M210 210q8-14 16 0t16 0'/%3E%3C/svg%3E");
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(20px, env(safe-area-inset-top, 0px)) max(40px, env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- encabezado ---------- */
+.masthead { max-width: 640px; margin: 0 auto 18px; }
+.brand { display: flex; gap: 16px; align-items: center; color: inherit; text-decoration: none; }
+.brand img { flex: none; width: 62px; height: auto; transform: rotate(-3deg); }
+.wordmark { display: block; font-family: var(--script); font-weight: 700; font-size: 3rem; line-height: .95; letter-spacing: -.01em; }
+.tagline { display: block; color: var(--muted); font-size: .95rem; margin-top: 6px; max-width: 34ch; }
+
+/* ---------- la hoja ---------- */
+.sheet {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  border: 1px solid #eceae6;
+  border-radius: 3px;
+  padding: 28px 24px 30px 64px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.sheet::before { /* margen rojo de la hoja de carta */
+  content: ""; position: absolute; top: 0; bottom: 0; left: 44px;
+  border-left: 2px solid var(--margin); opacity: .75;
+}
+.sheet::after { /* doble línea de encabezado de papel carta */
+  content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 4px;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.foot { max-width: 640px; margin: 18px auto 0; color: var(--muted); font-size: .85rem; text-align: center; }
+
+h2 { font-family: var(--script); font-weight: 700; font-size: 2.1rem; line-height: 1; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--serif); font-weight: 600; font-size: 1.05rem; margin: 0; }
+.label { font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.note { color: var(--muted); font-size: 1rem; margin: 0; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.spread { justify-content: space-between; }
+hr.sep { border: 0; border-top: 1px dashed #cfd3d8; margin: 6px 0; width: 100%; }
+
+/* ---------- controles ---------- */
+button, .btn {
+  font: inherit; font-family: var(--serif); font-weight: 600; font-size: 1rem;
+  cursor: pointer; border-radius: 8px; border: 2px solid var(--ink);
+  background: var(--ink); color: var(--paper); padding: 11px 18px;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; line-height: 1.2;
+}
+button.ghost, .btn.ghost { background: var(--paper); color: var(--ink); }
+button.link { border: 0; background: none; color: var(--ink); padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; font-weight: 400; }
+button.small, .btn.small { padding: 7px 12px; font-size: .9rem; }
+button:disabled { opacity: .4; cursor: default; }
+:focus-visible { outline: 3px solid #1f3a93; outline-offset: 2px; }
+
+input[type=text], input[type=email], select {
+  font: inherit; font-size: 1rem; color: var(--ink); background: var(--paper);
+  border: 0; border-bottom: 2px solid #c9ced6; border-radius: 0;
+  padding: 8px 2px; width: 100%; min-width: 0;
+}
+input:focus { border-bottom-color: var(--ink); outline: none; }
+select { width: auto; border: 2px solid #c9ced6; border-radius: 8px; padding: 8px 10px; }
+
+/* ---------- escritura sobre renglones ---------- */
+.ruled {
+  font-family: var(--hand); font-size: 1.2rem; line-height: var(--line);
+  background-image: linear-gradient(transparent calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px));
+  background-size: 100% var(--line);
+  background-attachment: local;
+}
+textarea.ruled {
+  width: 100%; min-height: calc(var(--line) * 5); resize: vertical;
+  border: 0; padding: 0 2px; margin: 0; color: var(--ink); background-color: transparent;
+  border-bottom: 1px solid transparent;
+}
+textarea.ruled:focus { outline: none; }
+.paper-strip { border-left: 4px solid var(--c, var(--ink)); padding-left: 14px; color: var(--c, var(--ink)); }
+.who { font-family: var(--serif); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--c); display: block; line-height: var(--line); }
+
+/* pliegues: lo que ya está doblado y no se ve */
+.folds { display: flex; flex-direction: column; gap: 3px; }
+.fold {
+  height: 20px; border-left: 4px solid var(--c);
+  background: repeating-linear-gradient(135deg, var(--fold) 0 6px, transparent 6px 11px);
+  box-shadow: inset 0 -1px 0 #dfe2e6;
+}
+.fold:nth-child(odd) { transform: translateX(3px); }
+
+/* ---------- listas y sellos ---------- */
+.games { display: flex; flex-direction: column; gap: 0; }
+.game {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  width: 100%; text-align: left; background: none; color: var(--ink); border: 0; border-radius: 0;
+  border-bottom: 1px solid var(--rule); padding: 12px 2px; font-weight: 400;
+}
+.game:hover { background: #f7f9fc; }
+.game .t { font-family: var(--hand); font-size: 1.2rem; min-width: 0; overflow-wrap: anywhere; }
+.game .s { color: var(--muted); font-size: .85rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stamp {
+  display: inline-block; font-family: var(--serif); font-weight: 600; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 9px; border: 2px solid currentColor; border-radius: 4px; transform: rotate(-3deg); white-space: nowrap;
+}
+.stamp.go { color: #b3261e; }
+.stamp.wait { color: var(--muted); }
+.stamp.done { color: #1f3a93; }
+
+.players { display: flex; flex-direction: column; gap: 8px; }
+.prow { display: grid; grid-template-columns: 14px minmax(0,1fr) minmax(0,1.3fr) 32px; gap: 10px; align-items: end; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); margin-bottom: 14px; }
+.prow .x { border: 0; background: none; color: var(--muted); padding: 6px; font-size: 1.3rem; line-height: 1; }
+@media (max-width: 520px) {
+  .prow { grid-template-columns: 14px minmax(0,1fr) 32px; }
+  .prow input[type=email] { grid-column: 2 / 3; }
+  .sheet { padding: 24px 16px 26px 40px; }
+  .sheet::before { left: 26px; }
+  .wordmark { font-size: 2.5rem; }
+  .brand img { width: 50px; }
+}
+
+.links { display: flex; flex-direction: column; gap: 14px; }
+.link-row { display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--c); padding-left: 12px; }
+.link-row code { font-size: .8rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.reveal { display: flex; flex-direction: column; gap: 6px; }
+.reveal p { margin: 0; white-space: pre-wrap; }
+
+.opener-box { display: flex; flex-direction: column; gap: 4px; }
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 8px;
+  font-size: .95rem; max-width: calc(100% - 32px); z-index: 5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet > * { animation: ink .35s ease-out both; }
+  @keyframes ink { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+}
