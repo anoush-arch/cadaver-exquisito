@@ -135,12 +135,10 @@ textarea.ruled:focus { outline: none; }
 .stamp.done { color: #1f3a93; }
 
 .players { display: flex; flex-direction: column; gap: 8px; }
-.prow { display: grid; grid-template-columns: 14px minmax(0,1fr) minmax(0,1.3fr) 32px; gap: 10px; align-items: end; }
+.prow { display: grid; grid-template-columns: 14px minmax(0,1fr) 32px; gap: 10px; align-items: end; }
 .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); margin-bottom: 14px; }
 .prow .x { border: 0; background: none; color: var(--muted); padding: 6px; font-size: 1.3rem; line-height: 1; }
 @media (max-width: 520px) {
-  .prow { grid-template-columns: 14px minmax(0,1fr) 32px; }
-  .prow input[type=email] { grid-column: 2 / 3; }
   .sheet { padding: 24px 16px 26px 40px; }
   .sheet::before { left: 26px; }
   .wordmark { font-size: 2.5rem; }

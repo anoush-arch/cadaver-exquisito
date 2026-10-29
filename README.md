@@ -3,7 +3,7 @@
 Una historia escrita entre varios: cada uno ve solo la última línea del anterior, y al final se despliega el papel entero.
 
 - **Sin cuentas:** cada jugador tiene su link personal, y con ese link la app sabe quién es.
-- **Avisos por mail:** cuando a alguien le toca, le llega un mail con su link. También se puede avisar por WhatsApp con un botón.
+- **Avisos por WhatsApp:** cuando a alguien le toca, un botón abre WhatsApp con el mensaje y su link listos para mandar.
 - **Gratis:** la página vive en GitHub Pages, y los datos y los mails en una planilla de Google tuya.
 
 ```
@@ -33,7 +33,7 @@ backend/     Code.gs, el código que va en Apps Script
 
 ### 3. Jugar
 
-Abrí la página, armá una partida con los nombres (y mails, si querés que les lleguen los avisos) y mandale a cada uno su link. El link de cada uno es personal: si alguien lo reenvía, el que lo recibe puede escribir en su lugar.
+Abrí la página, armá una partida con los nombres y mandale a cada uno su link por WhatsApp. El link de cada uno es personal: si alguien lo reenvía, el que lo recibe puede escribir en su lugar.
 
 ## Si cambiás el código del backend
 
@@ -47,5 +47,4 @@ Después de pegar una versión nueva de `Code.gs`, andá a **Implementar → Adm
 
 ## Límites
 
-- Los mails salen de tu cuenta de Google. Una cuenta común manda unos 100 por día con Apps Script, y para un juego familiar sobra.
 - Las partidas quedan guardadas en la hoja *partidas* de tu planilla. No las edites a mano.

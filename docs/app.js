@@ -134,7 +134,7 @@
           <input type="text" id="title" maxlength="60" placeholder="Por ejemplo: «El pingüino del cortado»"></label>
         <div class="stack">
           <span class="label">Jugadores, en orden de turno</span>
-          <p class="note">Con mail, a cada uno le avisamos cuando le toca. Sin mail, le pasás su link por WhatsApp.</p>
+          <p class="note">Cada uno recibe su propio link. Cuando a alguien le toque, le avisás por WhatsApp con un botón.</p>
           <div class="players" id="players"></div>
           <div><button class="link" id="add" type="button">+ Sumar jugador</button></div>
         </div>
@@ -152,7 +152,6 @@
         <div class="prow" style="--c:${ink(i)}">
           <span class="dot" aria-hidden="true"></span>
           <input type="text" id="pn${i}" maxlength="30" placeholder="${i === 0 ? "Tu nombre" : "Nombre"}" value="${esc(p.name)}" aria-label="Nombre del jugador ${i + 1}">
-          <input type="email" id="pe${i}" maxlength="120" placeholder="Mail (opcional)" value="${esc(p.email)}" aria-label="Mail del jugador ${i + 1}">
           ${players.length > 2 ? `<button class="x" type="button" data-rm="${i}" aria-label="Sacar jugador">×</button>` : "<span></span>"}
         </div>`).join("");
       box.querySelectorAll("input").forEach(inp => inp.oninput = () => {
@@ -170,7 +169,7 @@
     $("#reroll").onclick = () => { opener = pickOpener(opener); $("#opener").textContent = opener; };
 
     $("#create").onclick = async () => {
-      const list = players.map(p => ({ name: p.name.trim(), email: p.email.trim() })).filter(p => p.name);
+      const list = players.map(p => ({ name: p.name.trim(), email: "" })).filter(p => p.name);
       if (list.length < 2) return toast("Hacen falta al menos dos jugadores con nombre.");
       const bad = list.find(p => p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email));
       if (bad) return toast("Revisá el mail de " + bad.name + ".");
@@ -209,7 +208,7 @@
     const mailed = v.mailed || [];
     main.innerHTML = `
       <h2>Partida lista</h2>
-      <p class="note">Cada jugador tiene su propio link: con ese link entra y sabe que es él. ${mailed.length ? "A los que tienen mail ya les mandamos el suyo." : ""}</p>
+      <p class="note">Cada jugador tiene su propio link: con ese link entra y la página sabe que es él. Mandale a cada uno el suyo por WhatsApp.</p>
       <div class="links">
         ${v.players.map((p, i) => `
           <div class="link-row" style="--c:${ink(i)}">
@@ -334,7 +333,7 @@
     const pl = v.players[v.turnOf];
     main.innerHTML = `<h2>Doblado y pasado</h2>
       <div class="folds">${v.folds.concat([v.me]).map(w => `<div class="fold" style="--c:${ink(w)}"></div>`).join("")}</div>
-      <p class="note">Ahora le toca a <b>${esc(pl.name)}</b>. ${v.mailedTo === v.turnOf ? "Ya le mandamos un mail." : pl.hasEmail ? "No pudimos mandarle el mail: avisale por WhatsApp." : "No tiene mail cargado: avisale por WhatsApp."}</p>
+      <p class="note">Ahora le toca a <b>${esc(pl.name)}</b>. Avisale por WhatsApp así se entera.</p>
       ${nudges(v).replace(/<button class="small ghost" id="remind">[^<]*<\/button>/, "")}
       <div><a href="./" class="btn ghost">Volver a mis partidas</a></div>`;
   }
