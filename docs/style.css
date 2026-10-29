@@ -22,7 +22,6 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background-color: var(--paper);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' fill='none' stroke='%23161616' stroke-opacity='.07' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='40' cy='42' r='12'/%3E%3Ccircle cx='41' cy='43' r='4'/%3E%3Cpath d='M22 42q18-22 36 0q-18 22-36 0'/%3E%3Cpath d='M150 30h40M158 30V12h24v18'/%3E%3Cpath d='M200 120q14-16 34-10q10 4 12 10q-2 6-12 10q-20 6-34-10zM246 120l10-10v20z'/%3E%3Cpath d='M60 170v26m0 0l-10 14m10-14v16m0-16l10 14'/%3E%3Cpath d='M130 200c0-10 16-10 16 0s-24 12-24-2s32-16 32 4'/%3E%3Cpath d='M110 100l4 9 10 1-8 6 3 10-9-6-9 6 3-10-8-6 10-1z'/%3E%3Cpath d='M210 210q8-14 16 0t16 0'/%3E%3C/svg%3E");
   color: var(--ink);
   font-family: var(--serif);
   font-size: 18px;
