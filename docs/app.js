@@ -138,6 +138,8 @@
           <div class="players" id="players"></div>
           <div><button class="link" id="add" type="button">+ Sumar jugador</button></div>
         </div>
+        <label class="stack" style="gap:2px" id="keyWrap"><span class="label">Clave para crear partidas</span>
+          <input type="text" id="key" autocomplete="off" placeholder="La que pusiste en Apps Script"></label>
         <div class="row"><label for="rounds" class="label">Vueltas</label>
           <select id="rounds"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select>
           <span class="note" id="turnsNote"></span></div>
@@ -161,6 +163,8 @@
     }
     function turnsNote() { $("#turnsNote").textContent = "= " + (+$("#rounds").value * players.length) + " turnos en total"; }
     drawPlayers(); turnsNote();
+    const savedKey = store.get("cadaver:key", "");
+    if (savedKey) { $("#key").value = savedKey; $("#keyWrap").hidden = true; }
     $("#rounds").onchange = turnsNote;
     $("#add").onclick = () => { players.push({ name: "", email: "" }); drawPlayers(); turnsNote(); $("#pn" + (players.length - 1)).focus(); };
     $("#reroll").onclick = () => { opener = pickOpener(opener); $("#opener").textContent = opener; };
@@ -170,18 +174,24 @@
       if (list.length < 2) return toast("Hacen falta al menos dos jugadores con nombre.");
       const bad = list.find(p => p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email));
       if (bad) return toast("Revisá el mail de " + bad.name + ".");
+      const key = $("#key").value.trim();
+      if (!key) return toast("Falta la clave para crear partidas.");
       const btn = $("#create"); btn.disabled = true; btn.textContent = "Armando el sobre…";
       try {
         const v = await api({
-          action: "create", title: $("#title").value.trim(), opener: opener,
+          action: "create", key: key, title: $("#title").value.trim(), opener: opener,
           rounds: +$("#rounds").value, players: list,
           baseUrl: location.origin + location.pathname
         });
+        store.set("cadaver:key", key);
         const myToken = new URL(v.links[0]).searchParams.get("p");
         rememberGame(v, myToken);
         renderCreated(v, myToken);
         history.pushState(null, "", location.pathname + "?created=1");
-      } catch (e) { fail(e); btn.disabled = false; btn.textContent = "Empezar la partida"; }
+      } catch (e) {
+        if (/Clave/.test(e.message)) { store.del("cadaver:key"); $("#keyWrap").hidden = false; }
+        fail(e); btn.disabled = false; btn.textContent = "Empezar la partida";
+      }
     };
 
     // estado de mis partidas, en paralelo

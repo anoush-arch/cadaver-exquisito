@@ -1,3 +1,4 @@
+/** @OnlyCurrentDoc */
 /**
  * Cadáver Exquisito — backend en Google Apps Script.
  *
@@ -13,6 +14,7 @@ const SHEET_NAME = 'partidas';
 const MAX_PLAYERS = 8;
 const MAX_TEXT = 2000;
 const REMIND_EVERY_MS = 60 * 60 * 1000; // un recordatorio por hora, como mucho
+const MAX_GAMES_PER_DAY = 20;            // tope de partidas nuevas por día
 
 // ---------- entrada HTTP ----------
 
@@ -48,6 +50,7 @@ function handle_(req) {
 // ---------- acciones ----------
 
 function create_(req) {
+  checkKey_(req.key);
   const title = clean_(req.title, 60) || 'Partida sin título';
   const opener = clean_(req.opener, 300);
   const rounds = Math.max(1, Math.min(6, parseInt(req.rounds, 10) || 3));
@@ -72,7 +75,7 @@ function create_(req) {
     lastRemindAt: 0
   };
 
-  withLock_(() => save_(game));
+  withLock_(() => { countCreation_(); save_(game); });
 
   // Invitaciones: cada uno recibe su link personal.
   const mailed = [];
@@ -156,6 +159,23 @@ function remind_(req) {
   });
   if (!sent) throw new Error('No se pudo mandar el mail.');
   return { ok: true, to: game.players[who].name };
+}
+
+// ---------- protección ----------
+
+/** Solo quien sabe la clave puede crear partidas (y por lo tanto mandar invitaciones). */
+function checkKey_(key) {
+  const expected = PropertiesService.getScriptProperties().getProperty('CLAVE');
+  if (!expected) throw new Error('Falta configurar la clave en Apps Script (ver README).');
+  if (String(key || '') !== expected) throw new Error('Clave incorrecta.');
+}
+
+function countCreation_() {
+  const props = PropertiesService.getScriptProperties();
+  const k = 'creadas-' + new Date().toISOString().slice(0, 10);
+  const n = parseInt(props.getProperty(k) || '0', 10);
+  if (n >= MAX_GAMES_PER_DAY) throw new Error('Se alcanzó el máximo de partidas nuevas por hoy. Probá mañana.');
+  props.setProperty(k, String(n + 1));
 }
 
 // ---------- lógica del juego ----------
