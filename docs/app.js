@@ -2,8 +2,18 @@
   "use strict";
 
   const API = window.CADAVER_API;
-  const INKS = ["#1f3a93", "#b3261e", "#1b6b3a", "#6a2c91", "#8a5a12", "#0f6e7a", "#ad1457", "#37474f"];
-  const OPENER_INK = "#7a7d82";
+  // Colores de lápiz de librería: [lápiz brillante, tinta para el texto]
+  const INKS = [
+    ["#29b6f6", "#0277bd"], // celeste
+    ["#ff3b30", "#c4161c"], // rojo
+    ["#ffd600", "#9a7400"], // amarillo
+    ["#3fd14a", "#1e8a2a"], // verde
+    ["#ff8a00", "#bf5a00"], // naranja
+    ["#a259ff", "#6a1fc9"], // violeta
+    ["#ff4fa3", "#c2185b"], // rosa
+    ["#2f5bff", "#1f3ad1"]  // azul
+  ];
+  const OPENER_INK = ["#b9bcc1", "#6f7277"];
   const MAX_PLAYERS = 8;
 
   const OPENERS = [
@@ -42,7 +52,9 @@
   const $ = s => document.querySelector(s);
   const main = $("#main");
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const ink = i => (i === -1 ? OPENER_INK : INKS[i % INKS.length]);
+  const pair = i => (i === -1 ? OPENER_INK : INKS[i % INKS.length]);
+  const ink = i => "--c:" + pair(i)[0] + ";--t:" + pair(i)[1];
+  const deep = i => pair(i)[1];
 
   // ---------- almacenamiento local (comodidad, no es la fuente de verdad) ----------
   const store = {
@@ -127,7 +139,7 @@
         <h2>Nueva partida</h2>
         <div class="opener-box">
           <span class="label">Primera línea, por el azar</span>
-          <div class="ruled paper-strip" style="--c:${OPENER_INK}" id="opener">${esc(opener)}</div>
+          <div class="ruled paper-strip" style="${ink(-1)}" id="opener">${esc(opener)}</div>
           <div><button class="link" id="reroll" type="button">Otra primera línea</button></div>
         </div>
         <label class="stack" style="gap:2px"><span class="label">Título (opcional)</span>
@@ -149,7 +161,7 @@
     const box = $("#players");
     function drawPlayers() {
       box.innerHTML = players.map((p, i) => `
-        <div class="prow" style="--c:${ink(i)}">
+        <div class="prow" style="${ink(i)}">
           <span class="dot" aria-hidden="true"></span>
           <input type="text" id="pn${i}" maxlength="30" placeholder="${i === 0 ? "Tu nombre" : "Nombre"}" value="${esc(p.name)}" aria-label="Nombre del jugador ${i + 1}">
           ${players.length > 2 ? `<button class="x" type="button" data-rm="${i}" aria-label="Sacar jugador">×</button>` : "<span></span>"}
@@ -211,7 +223,7 @@
       <p class="note">Cada jugador tiene su propio link: con ese link entra y la página sabe que es él. Mandale a cada uno el suyo por WhatsApp.</p>
       <div class="links">
         ${v.players.map((p, i) => `
-          <div class="link-row" style="--c:${ink(i)}">
+          <div class="link-row" style="${ink(i)}">
             <div class="row spread"><h3>${esc(p.name)}${i === 0 ? " (vos)" : ""}</h3>
               ${mailed.includes(i) ? `<span class="note">Mail enviado</span>` : ""}</div>
             <code>${esc(v.links[i])}</code>
@@ -246,7 +258,7 @@
       v.full.turns.forEach(t => parts.push({ who: t.p, name: v.players[t.p].name, text: t.text }));
       main.innerHTML = `${back}${head}
         <span class="label">El papel desplegado</span>
-        <div class="reveal">${parts.map(x => `<div class="paper-strip" style="--c:${ink(x.who)}"><span class="who">${esc(x.name)}</span><p class="ruled">${esc(x.text)}</p></div>`).join("")}</div>
+        <div class="reveal">${parts.map(x => `<div class="paper-strip" style="${ink(x.who)}"><span class="who">${esc(x.name)}</span><p class="ruled">${esc(x.text)}</p></div>`).join("")}</div>
         <div class="row">
           <button id="copyAll" class="ghost">Copiar el texto</button>
           <a class="btn ghost" id="waAll" target="_blank" rel="noopener">Mandarlo por WhatsApp</a>
@@ -262,10 +274,10 @@
       return;
     }
 
-    const folds = v.folds.length ? `<div class="folds" aria-label="${v.folds.length} partes dobladas">${v.folds.map(w => `<div class="fold" style="--c:${ink(w)}"></div>`).join("")}</div>` : "";
+    const folds = v.folds.length ? `<div class="folds" aria-label="${v.folds.length} partes dobladas">${v.folds.map(w => `<div class="fold" style="${ink(w)}"></div>`).join("")}</div>` : "";
     const vis = v.visible
       ? `<div class="stack" style="gap:0"><span class="label">${v.n === 0 ? "Primera línea, por el azar" : "Lo único que se ve (de " + esc(v.players[v.visible.who].name) + ")"}</span>
-          <div class="ruled paper-strip" style="--c:${ink(v.visible.who)}">${esc(v.visible.text)}</div></div>`
+          <div class="ruled paper-strip" style="${ink(v.visible.who)}">${esc(v.visible.text)}</div></div>`
       : `<p class="note">Papel en blanco. Arrancá con lo que quieras.</p>`;
     const nextName = v.players[v.turnOf].name;
 
@@ -273,7 +285,7 @@
       const nextAfter = v.players[(v.turnOf + 1) % v.players.length].name;
       main.innerHTML = `${back}${head}${folds}${vis}
         <label class="stack" style="gap:0" for="txt"><span class="label">Tu parte</span></label>
-        <div class="paper-strip" style="--c:${ink(v.me)}"><textarea id="txt" class="ruled" placeholder="Seguí desde esa línea. Dos o tres renglones alcanzan." style="color:${ink(v.me)}"></textarea></div>
+        <div class="paper-strip" style="${ink(v.me)}"><textarea id="txt" class="ruled" placeholder="Seguí desde esa línea. Dos o tres renglones alcanzan." style="color:${deep(v.me)}"></textarea></div>
         <p class="note" id="pv"></p>
         <div><button id="send" disabled>${v.n + 1 === v.target ? "Escribir el final y desplegar" : "Doblar y pasar"}</button></div>`;
       const ta = $("#txt"), pv = $("#pv"), send = $("#send");
@@ -332,7 +344,7 @@
   function renderPassed(g, p, v) {
     const pl = v.players[v.turnOf];
     main.innerHTML = `<h2>Doblado y pasado</h2>
-      <div class="folds">${v.folds.concat([v.me]).map(w => `<div class="fold" style="--c:${ink(w)}"></div>`).join("")}</div>
+      <div class="folds">${v.folds.concat([v.me]).map(w => `<div class="fold" style="${ink(w)}"></div>`).join("")}</div>
       <p class="note">Ahora le toca a <b>${esc(pl.name)}</b>. Avisale por WhatsApp así se entera.</p>
       ${nudges(v).replace(/<button class="small ghost" id="remind">[^<]*<\/button>/, "")}
       <div><a href="./" class="btn ghost">Volver a mis partidas</a></div>`;
