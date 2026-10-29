@@ -64,7 +64,7 @@
   };
   function rememberGame(v, p) {
     const list = store.get("cadaver:games", []).filter(x => x.g !== v.id);
-    list.unshift({ g: v.id, p: p, title: v.title, at: Date.now() });
+    list.unshift({ g: v.id, p: p, title: v.title, me: v.players[v.me].name, at: Date.now() });
     store.set("cadaver:games", list.slice(0, 30));
   }
 
@@ -133,7 +133,7 @@
 
     main.innerHTML = `
       ${mine.length ? `<section class="stack"><h2>Mis partidas</h2><div class="games" id="mine">
-        ${mine.map(x => `<button class="game" data-g="${esc(x.g)}" data-p="${esc(x.p)}"><span class="t">${esc(x.title)}</span><span class="row" style="flex-wrap:nowrap"><span class="s" data-s>…</span></span></button>`).join("")}
+        ${mine.map(x => `<button class="game" data-g="${esc(x.g)}" data-p="${esc(x.p)}"><span class="t">${esc(x.title)}${x.me ? `<span class="as">como ${esc(x.me)}</span>` : ""}</span><span class="row" style="flex-wrap:nowrap"><span class="s" data-s>…</span></span></button>`).join("")}
       </div></section><hr class="sep">` : ""}
       <section class="stack">
         <h2>Nueva partida</h2>
@@ -249,7 +249,8 @@
     document.title = v.title + " · Cadáver Exquisito";
     const s = statusOf(v);
     const back = `<div><a href="./" class="btn ghost small">← Mis partidas</a></div>`;
-    const head = `<div class="stack" style="gap:4px"><h2>${esc(v.title)}</h2>
+    const iam = `<div class="iam" style="${ink(v.me)}">Estás jugando como <span class="who">${esc(v.players[v.me].name)}</span></div>`;
+    const head = `${iam}<div class="stack" style="gap:4px"><h2>${esc(v.title)}</h2>
       <div class="row spread"><span class="label">${v.done ? v.target + " turnos" : "Turno " + (v.n + 1) + " de " + v.target}</span>${stamp(s)}</div></div>`;
 
     if (v.done) {
